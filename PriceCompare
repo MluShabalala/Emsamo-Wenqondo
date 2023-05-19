@@ -1,1 +1,80 @@
+# Import necessary libraries
+import os
+import sys
+from flask import Flask, render_template, request, redirect, url_for
+from flask_sqlalchemy import SQLAlchemy
 
+# Create a Flask app
+app = Flask(__name__)
+
+# Create a database
+app.config['SQLALCHEMY_DATABASE_URI'] = 'sqlite:///database.sqlite'
+db = SQLAlchemy(app)
+
+# Create a model for products
+class Product(db.Model):
+    id = db.Column(db.Integer, primary_key=True)
+    name = db.Column(db.String(100))
+    description = db.Column(db.String(1000))
+    price = db.Column(db.Float)
+    seller = db.Column(db.String(100))
+
+    def __repr__(self):
+        return f'Product({self.id}, {self.name})'
+
+# Create a model for orders
+class Order(db.Model):
+    id = db.Column(db.Integer, primary_key=True)
+    product_id = db.Column(db.Integer, db.ForeignKey('product.id'))
+    quantity = db.Column(db.Integer)
+    customer_name = db.Column(db.String(100))
+    customer_email = db.Column(db.String(100))
+    customer_address = db.Column(db.String(100))
+
+    def __repr__(self):
+        return f'Order({self.id}, {self.product_id}, {self.quantity})'
+
+# Create a route to list all products
+@app.route('/')
+def index():
+    products = Product.query.all()
+    return render_template('index.html', products=products)
+
+# Create a route to create a new product
+@app.route('/new', methods=['GET', 'POST'])
+def new():
+    if request.method == 'GET':
+        return render_template('new.html')
+    else:
+        name = request.form['name']
+        description = request.form['description']
+        price = request.form['price']
+        seller = request.form['seller']
+
+        product = Product(name=name, description=description, price=price, seller=seller)
+        db.session.add(product)
+        db.session.commit()
+
+        return redirect(url_for('index'))
+
+# Create a route to take an order
+@app.route('/order', methods=['GET', 'POST'])
+def order():
+    if request.method == 'GET':
+        return render_template('order.html')
+    else:
+        product_id = request.form['product_id']
+        quantity = request.form['quantity']
+        customer_name = request.form['customer_name']
+        customer_email = request.form['customer_email']
+        customer_address = request.form['customer_address']
+
+        order = Order(product_id=product_id, quantity=quantity, customer_name=customer_name, customer_email=customer_email, customer_address=customer_address)
+        db.session.add(order)
+        db.session.commit()
+
+        return redirect(url_for('index'))
+
+# Run the app
+if __name__ == '__main__':
+    app.run(debug=True)
