@@ -1,0 +1,117 @@
+import requests
+import json
+
+# Define the base URL for the API
+BASE_URL = "https://api.pricecomparison.com"
+
+# Define the headers for the API
+HEADERS = {
+    "Authorization": "Bearer YOUR_API_KEY",
+}
+
+# Define the function to get the product information
+def get_product_info(product_id):
+    # Make the API request
+    response = requests.get(
+        f"{BASE_URL}/products/{product_id}", headers=HEADERS
+    )
+
+    # Check the response status code
+    if response.status_code == 200:
+        # Get the product information from the response
+        product_info = response.json()
+
+        return product_info
+    else:
+        # Raise an error if the response status code is not 200
+        raise Exception(f"Error getting product information: {response.status_code}")
+
+# Define the function to get the product reviews
+def get_product_reviews(product_id):
+    # Make the API request
+    response = requests.get(
+        f"{BASE_URL}/products/{product_id}/reviews", headers=HEADERS
+    )
+
+    # Check the response status code
+    if response.status_code == 200:
+        # Get the product reviews from the response
+        reviews = response.json()
+
+        return reviews
+    else:
+        # Raise an error if the response status code is not 200
+        raise Exception(f"Error getting product reviews: {response.status_code}")
+
+# Define the function to get the product prices
+def get_product_prices(product_id):
+    # Make the API request
+    response = requests.get(
+        f"{BASE_URL}/products/{product_id}/prices", headers=HEADERS
+    )
+
+    # Check the response status code
+    if response.status_code == 200:
+        # Get the product prices from the response
+        prices = response.json()
+
+        return prices
+    else:
+        # Raise an error if the response status code is not 200
+        raise Exception(f"Error getting product prices: {response.status_code}")
+
+# Define the function to search for products
+def search_products(query):
+    # Make the API request
+    response = requests.get(
+        f"{BASE_URL}/products?query={query}", headers=HEADERS
+    )
+
+    # Check the response status code
+    if response.status_code == 200:
+        # Get the product information from the response
+        products = response.json()
+
+        return products
+    else:
+        # Raise an error if the response status code is not 200
+        raise Exception(f"Error searching for products: {response.status_code}")
+
+# Define the function to order a product
+def order_product(product_id, quantity):
+    # Make the API request
+    response = requests.post(
+        f"{BASE_URL}/products/{product_id}/orders",
+        headers=HEADERS,
+        data={"quantity": quantity},
+    )
+
+    # Check the response status code
+    if response.status_code == 200:
+        # Get the order information from the response
+        order_info = response.json()
+
+        return order_info
+    else:
+        # Raise an error if the response status code is not 200
+        raise Exception(f"Error ordering product: {response.status_code}")
+
+# Define the function to get the subscription information
+def get_subscription_info():
+    # Make the API request
+    response = requests.get(
+        f"{BASE_URL}/subscriptions", headers=HEADERS
+    )
+
+    # Check the response status code
+    if response.status_code == 200:
+        # Get the subscription information from the response
+        subscription_info = response.json()
+
+        return subscription_info
+    else:
+        # Raise an error if the response status code is not 200
+        raise Exception(f"Error getting subscription information: {response.status_code
+python3 -m venv venv
+pip install -r requirements.txt
+python app.py
